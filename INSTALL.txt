@@ -1,0 +1,30 @@
+SheetSync for WooCommerce — Installation
+=========================================
+
+CORRECT PATH AFTER INSTALL
+  wp-content/plugins/sheetsync-for-woocommerce/sheetsync-for-woocommerce.php
+
+WORDPRESS UPLOAD (recommended)
+  1. WordPress Admin → Plugins → Add New → Upload Plugin
+  2. Choose: sheetsync-for-woocommerce.zip
+  3. Click Install Now, then Activate
+
+DO NOT
+  - Rename the plugin folder to sheetsync-for-woocommerce-1.2.0 (or any version number)
+  - Extract the ZIP inside another folder before uploading via FTP
+  - Nest the plugin: plugins/sheetsync-for-woocommerce-1.2.0/sheetsync-for-woocommerce/
+
+FTP / cPanel (if not using WordPress upload)
+  1. Extract sheetsync-for-woocommerce.zip on your computer
+  2. Upload ONLY the inner folder named: sheetsync-for-woocommerce
+  3. Place it directly in: wp-content/plugins/
+  4. Activate from Plugins screen
+
+IF YOU SEE "Plugin file does not exist"
+  1. Delete all sheetsync-* folders from wp-content/plugins/
+  2. Re-upload sheetsync-for-woocommerce.zip via Plugins → Upload
+  3. Confirm path ends with: .../sheetsync-for-woocommerce/sheetsync-for-woocommerce.php
+
+FREEMIUS / DISTRIBUTION
+  Upload this same ZIP to your Freemius release. The folder inside the ZIP
+  must always be: sheetsync-for-woocommerce (plugin slug, not version).
