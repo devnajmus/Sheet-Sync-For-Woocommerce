@@ -76,6 +76,8 @@ class SheetSync_Activator {
             update_option( 'sheetsync_settings', array(
                 'batch_size'          => $default_batch,
                 'log_retention_days'  => 30,
+                'log_level'           => 'info',
+                'empty_cell_policy'   => 'ignore',
                 'email_notifications' => false,
                 'notification_email'  => get_option( 'admin_email' ),
             ), false );

@@ -324,6 +324,44 @@ $sheetsync_dash_order_cap   = $sheetsync_dash_orders_per * $sheetsync_dash_order
                         <p class="description"><?php esc_html_e( 'Controls how much sync activity is stored in Sync Logs.', 'sheetsync-for-woocommerce' ); ?></p>
                     </div>
 
+                    <div class="ss-settings-section ss-settings-section--bordered">
+                        <h3 class="ss-settings-section-title"><?php esc_html_e( 'Sheet import behavior', 'sheetsync-for-woocommerce' ); ?></h3>
+                        <p class="description" style="margin-top:0;">
+                            <?php esc_html_e( 'Applies when importing from Google Sheets to WooCommerce (all product types: simple, variable, variations, and grouped).', 'sheetsync-for-woocommerce' ); ?>
+                        </p>
+                        <?php
+                        $sheetsync_empty_cell_policy = (string) ( $settings['empty_cell_policy'] ?? 'ignore' );
+                        if ( ! in_array( $sheetsync_empty_cell_policy, array( 'ignore', 'clear' ), true ) ) {
+                            $sheetsync_empty_cell_policy = 'ignore';
+                        }
+                        ?>
+                        <fieldset class="ss-strategy-cards" style="margin-top:12px;" aria-labelledby="ss-empty-cell-policy-label">
+                            <legend id="ss-empty-cell-policy-label" class="screen-reader-text"><?php esc_html_e( 'Empty cell policy', 'sheetsync-for-woocommerce' ); ?></legend>
+
+                            <label class="ss-strategy-card <?php echo 'ignore' === $sheetsync_empty_cell_policy ? 'selected' : ''; ?>">
+                                <input type="radio" name="empty_cell_policy" value="ignore" <?php checked( $sheetsync_empty_cell_policy, 'ignore' ); ?>>
+                                <div class="ss-strategy-icon" aria-hidden="true">🛡️</div>
+                                <div>
+                                    <strong><?php esc_html_e( 'Ignore empty cells (Recommended)', 'sheetsync-for-woocommerce' ); ?></strong>
+                                    <p class="description" style="margin:4px 0 0;">
+                                        <?php esc_html_e( 'Blank cells in Google Sheets are skipped during import. Existing WooCommerce prices, stock, and descriptions stay unchanged.', 'sheetsync-for-woocommerce' ); ?>
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label class="ss-strategy-card <?php echo 'clear' === $sheetsync_empty_cell_policy ? 'selected' : ''; ?>">
+                                <input type="radio" name="empty_cell_policy" value="clear" <?php checked( $sheetsync_empty_cell_policy, 'clear' ); ?>>
+                                <div class="ss-strategy-icon" aria-hidden="true">🧹</div>
+                                <div>
+                                    <strong><?php esc_html_e( 'Clear WooCommerce values', 'sheetsync-for-woocommerce' ); ?></strong>
+                                    <p class="description" style="margin:4px 0 0;">
+                                        <?php esc_html_e( 'When a mapped cell is empty in the sheet, the matching WooCommerce field is cleared on import (regular price, sale price, stock quantity, short description, and long description). Variable parent price ranges exported for display are never cleared — edit variation rows for prices.', 'sheetsync-for-woocommerce' ); ?>
+                                    </p>
+                                </div>
+                            </label>
+                        </fieldset>
+                    </div>
+
                     <div class="ss-settings-section">
                         <label for="ss-template-url" class="ss-settings-field-label"><?php esc_html_e( 'Google Sheet template URL', 'sheetsync-for-woocommerce' ); ?></label>
                         <input type="url" name="google_template_url" id="ss-template-url" class="large-text"

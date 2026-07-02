@@ -479,7 +479,11 @@ class SheetSync_Variation_Sync {
 					unset( $apply[ $img_field ] );
 				}
 			}
-			$updater->apply_updates( $product, $apply, SheetSync_Import_Rules::fields_to_clear_in_wc( $updater->empty_mapped_fields( $row ) ) );
+			$updater->apply_updates(
+				$product,
+				$apply,
+				SheetSync_Import_Rules::fields_to_clear_in_wc( $updater->empty_mapped_fields( $row ), $data )
+			);
 
 			if ( $is_new && empty( $data['post_status'] ) ) {
 				$product->set_status( 'publish' );
@@ -673,7 +677,7 @@ class SheetSync_Variation_Sync {
 					$variation,
 					$apply,
 					class_exists( 'SheetSync_Import_Rules', false )
-						? SheetSync_Import_Rules::fields_to_clear_in_wc( $up->empty_mapped_fields( $row ) )
+						? SheetSync_Import_Rules::fields_to_clear_in_wc( $up->empty_mapped_fields( $row ), $data )
 						: array()
 				);
 				SheetSync_Product_Updater::flag_internal_update( true );

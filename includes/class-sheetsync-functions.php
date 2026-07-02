@@ -1854,8 +1854,11 @@ if ( ! function_exists( 'sheetsync_empty_cell_policy' ) ) {
 	 */
 	function sheetsync_empty_cell_policy(): string {
 		$settings = get_option( 'sheetsync_settings', array() );
-		$policy   = (string) ( $settings['empty_cell_policy'] ?? 'ignore' );
-		$policy   = (string) apply_filters( 'sheetsync_empty_cell_policy', $policy );
+		if ( ! is_array( $settings ) ) {
+			$settings = array();
+		}
+		$policy = (string) ( $settings['empty_cell_policy'] ?? 'ignore' );
+		$policy = (string) apply_filters( 'sheetsync_empty_cell_policy', $policy );
 		return in_array( $policy, array( 'ignore', 'clear' ), true ) ? $policy : 'ignore';
 	}
 }

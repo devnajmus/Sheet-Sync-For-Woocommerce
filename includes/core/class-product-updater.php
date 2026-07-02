@@ -247,7 +247,7 @@ class SheetSync_Product_Updater {
             $product_data = $data;
             $image_data   = $this->pull_image_fields( $product_data );
             $clear_fields = class_exists( 'SheetSync_Import_Rules', false )
-                ? SheetSync_Import_Rules::fields_to_clear_in_wc( $this->empty_mapped_fields( $row ) )
+                ? SheetSync_Import_Rules::fields_to_clear_in_wc( $this->empty_mapped_fields( $row ), $data )
                 : array();
             $this->apply_updates( $product, $product_data, $clear_fields );
 
@@ -328,17 +328,22 @@ class SheetSync_Product_Updater {
      * @param WC_Product            $product   Target product.
      * @param array<string, string> $data      Merged field values.
      * @param int                   $sheet_row 1-based sheet row for logging.
+     * @param array<int, string>    $raw_row   Optional raw sheet row (empty-cell clear policy).
      * @return string updated|skipped|error
      */
-    public function update_from_data( WC_Product $product, array $data, int $sheet_row = 0 ): string {
-        if ( empty( $data ) ) {
+    public function update_from_data( WC_Product $product, array $data, int $sheet_row = 0, array $raw_row = array() ): string {
+        $clear_fields = class_exists( 'SheetSync_Import_Rules', false ) && ! empty( $raw_row )
+            ? SheetSync_Import_Rules::fields_to_clear_in_wc( $this->empty_mapped_fields( $raw_row ), $data )
+            : array();
+
+        if ( empty( $data ) && empty( $clear_fields ) ) {
             return 'skipped';
         }
 
         try {
             $product_data = $data;
             $image_data   = $this->pull_image_fields( $product_data );
-            $this->apply_updates( $product, $product_data );
+            $this->apply_updates( $product, $product_data, $clear_fields );
 
             if ( function_exists( 'sheetsync_apply_import_price_policy' )
                 && sheetsync_apply_import_price_policy( $product, $data, false ) ) {

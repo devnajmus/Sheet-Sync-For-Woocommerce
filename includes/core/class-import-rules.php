@@ -55,10 +55,11 @@ class SheetSync_Import_Rules {
 	/**
 	 * Fields that should be cleared in WooCommerce when the sheet cell is blank (clear policy only).
 	 *
-	 * @param list<string> $empty_mapped Fields mapped but empty in the sheet row.
+	 * @param list<string>           $empty_mapped Fields mapped but empty in the sheet row.
+	 * @param array<string, string>  $data         Mapped row values (for row-type exclusions).
 	 * @return list<string>
 	 */
-	public static function fields_to_clear_in_wc( array $empty_mapped ): array {
+	public static function fields_to_clear_in_wc( array $empty_mapped, array $data = array() ): array {
 		if ( function_exists( 'sheetsync_empty_cell_policy' )
 			&& 'clear' !== sheetsync_empty_cell_policy() ) {
 			return array();
@@ -66,12 +67,14 @@ class SheetSync_Import_Rules {
 		if ( ! class_exists( 'SheetSync_Field_Mapper', false ) ) {
 			return array();
 		}
-		return array_values(
-			array_intersect(
-				$empty_mapped,
-				SheetSync_Field_Mapper::EMPTY_CELL_CLEAR_FIELDS
-			)
-		);
+
+		$allowed = SheetSync_Field_Mapper::EMPTY_CELL_CLEAR_FIELDS;
+		if ( ! empty( $data ) ) {
+			$skip    = SheetSync_Field_Mapper::import_excluded_fields_for_row( $data );
+			$allowed = array_values( array_diff( $allowed, $skip ) );
+		}
+
+		return array_values( array_intersect( $empty_mapped, $allowed ) );
 	}
 
 	/**

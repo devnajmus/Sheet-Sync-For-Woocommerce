@@ -1014,19 +1014,31 @@ class SheetSync_Pro_Admin {
         if ( ! in_array( $log_level, array( 'error', 'info', 'debug' ), true ) ) {
             $log_level = 'info';
         }
+        $empty_cell_policy = sanitize_key( wp_unslash( $_POST['empty_cell_policy'] ?? 'ignore' ) );
+        if ( ! in_array( $empty_cell_policy, array( 'ignore', 'clear' ), true ) ) {
+            $empty_cell_policy = 'ignore';
+        }
         $report_interval = sanitize_key( wp_unslash( $_POST['email_report_interval'] ?? '' ) );
         if ( ! in_array( $report_interval, array( '', 'daily', 'weekly' ), true ) ) {
             $report_interval = '';
         }
-        $settings = array(
+        $existing = get_option( 'sheetsync_settings', array() );
+        if ( ! is_array( $existing ) ) {
+            $existing = array();
+        }
+        $settings = array_merge(
+            $existing,
+            array(
             'batch_size'            => max( 1, min( 500, absint( $_POST['batch_size'] ?? 50 ) ) ),
             'log_retention_days'    => max( 1, min( 365, absint( $_POST['log_retention_days'] ?? 30 ) ) ),
             'log_level'             => $log_level,
+            'empty_cell_policy'     => $empty_cell_policy,
             'email_notifications'   => $is_pro && ! empty( $_POST['email_notifications'] ),
             'email_report_interval' => $is_pro ? $report_interval : '',
             'notification_email'    => sanitize_email( wp_unslash( $_POST['notification_email'] ?? get_option( 'admin_email' ) ) ),
             'google_template_url'   => esc_url_raw( wp_unslash( $_POST['google_template_url'] ?? '' ) ),
             'setup_video_url'       => esc_url_raw( wp_unslash( $_POST['setup_video_url'] ?? '' ) ),
+            )
         );
         update_option( 'sheetsync_settings', $settings );
 

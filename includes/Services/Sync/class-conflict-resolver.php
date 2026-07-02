@@ -376,7 +376,7 @@ class SheetSync_Conflict_Resolver {
 			}
 
 			$updater = new SheetSync_Product_Updater( $maps );
-			$result  = $updater->update_from_data( $product, $updater->extract_data( $row ), $sheet_row );
+			$result  = $updater->update_from_data( $product, $updater->extract_data( $row ), $sheet_row, $row );
 			if ( 'updated' !== $result ) {
 				return array(
 					'success' => false,
